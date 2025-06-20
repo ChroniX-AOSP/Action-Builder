@@ -1,4 +1,4 @@
-name: Vince RiceDroid old
+name: AfterlifeOS Violet
 on:
   workflow_dispatch
   
@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Setup git and install repo
         run: |
-          git config --global user.email "rom-builder@rest.eu.org"
-          git config --global user.name "ROM BUILDER"
+          git config --global user.email "phoniexpaul88@gmail.com"
+          git config --global user.name "Chronix-AOSP"
           git config --global pull.rebase true  
           sudo apt-get update -y && sudo apt-get install repo -y
           
@@ -28,21 +28,21 @@ jobs:
     needs: Repo_git
     steps:
       - name: Clone Device Tree
-        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince || ( cd device/xiaomi/vince && git fetch && git pull )
+        run: git clone https://github.com/ChroniX-AOSP/platform_device_xiaomi_violet.git device/xiaomi/violet || ( cd device/xiaomi/violet && git fetch && git pull )
         
   Vendor_tree:
     runs-on: self-hosted
     needs: Repo_git
     steps:
       - name: Clone Vendor Tree
-        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince || ( cd vendor/xiaomi/vince && git fetch && git pull )
+        run: git clone https://github.com/ChroniX-AOSP/platform_vendor_xiaomi_violet.git vendor/xiaomi/violet || ( cd vendor/xiaomi/violet && git fetch && git pull )
       
   Kernel_tree:
     runs-on: self-hosted
     needs: Repo_git
     steps:
       - name: Clone Kernel Tree
-        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince || ( cd kernel/xiaomi/vince && git fetch && git pull )
+        run: git clone https://github.com/ChroniX-AOSP/platform_kernel_xiaomi_violet.git -b surukuu-1.1 kernel/xiaomi/violet || ( cd kernel/xiaomi/violet && git fetch && git pull )
       
   Clang:
     runs-on: self-hosted
@@ -70,7 +70,7 @@ jobs:
     needs: [Repo_git]
     steps:
       - name: Setup source
-        run: repo init --depth=1 --no-repo-verify -u https://github.com/ricedroidOSS/android -b thirteen -g default,-mips,-darwin,-notdefault || echo "Already done"
+        run: repo init --depth=1 --no-repo-verify -u https://github.com/AfterlifeOS/android_manifest.git -b 14 --git-lfs -g default,-mips,-darwin,-notdefault || echo "Already done"
         
   Sync_source:
     runs-on: self-hosted
@@ -80,21 +80,21 @@ jobs:
         run: rm -rf out/target/product/vince || echo "Doesn't exist"
         
       - name: Sync source
-        run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune --force-sync -j8
+        run: repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
         
   Build_rom_vanilla:
     runs-on: self-hosted
     needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree, FMRadio, Viper]
     steps:
       - name: Build Vanilla
-        run: . build/envsetup.sh && lunch lineage_vince-user && mka bacon | tee log.txt
+        run: . build/envsetup.sh && goafterlife violet-user && mka bacon | tee log.txt
         
   Build_rom_gapps:
     runs-on: self-hosted
     needs: Build_rom_vanilla
     steps:
       - name: Build Gapps
-        run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GMS=true && mka bacon | tee log.txt
+        run: . build/envsetup.sh && goafterlife violet-user && export WITH_GMS=true && mka bacon | tee log.txt
         
   Release:
     runs-on: self-hosted
@@ -107,9 +107,9 @@ jobs:
         - name: Upload modules to release
           uses: svenstaro/upload-release-action@v2
           with:
-            repo_token: ${{ secrets.RELEASE_TOKEN }}
-            repo_name: rom-builder/Vince-RiceDroid
+            repo_token: ${{ secrets.RELEASE_TOKE }}
+            repo_name: ChroniX-AOSP/AfterlifeOS-Violet
             tag: ${{ steps.tag_code.outputs.TAG }}
             release_name: ${{ steps.tag_code.outputs.TAG }}
             file_glob: true
-            file: out/target/product/vince/riceDroid*
+            file: out/target/product/violet/AfterlifeOS*
