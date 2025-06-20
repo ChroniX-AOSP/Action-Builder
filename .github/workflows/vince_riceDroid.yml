@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Setup git and install repo
         run: |
-          git config --global user.email "phoniexpaul88@gmail.com"
-          git config --global user.name "Chronix-AOSP"
+          git config --global user.email "rom-builder@rest.eu.org"
+          git config --global user.name "ROM BUILDER"
           git config --global pull.rebase true  
           sudo apt-get update -y && sudo apt-get install repo -y
           
