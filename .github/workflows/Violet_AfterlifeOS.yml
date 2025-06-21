@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Setup git and install repo
         run: |
-          git config --global user.email "rom-builder@rest.eu.org"
-          git config --global user.name "ROM BUILDER"
+          git config --global user.email "phoniexpaul88@gmail.com"
+          git config --global user.name "Chronix-AOSP"
           git config --global pull.rebase true  
           sudo apt-get update -y && sudo apt-get install repo -y
           
@@ -94,7 +94,7 @@ jobs:
     needs: Build_rom_vanilla
     steps:
       - name: Build Gapps
-        run: . build/envsetup.sh && goafterlife violet-user && export WITH_GMS=true && mka bacon | tee log.txt
+        run: . build/envsetup.sh && goafterlife violet-userdebug && export WITH_GMS=true && mka bacon | tee log.txt
         
   Release:
     runs-on: self-hosted
@@ -110,6 +110,6 @@ jobs:
             repo_token: ${{ secrets.RELEASE_TOKE }}
             repo_name: ChroniX-AOSP/AfterlifeOS-Violet
             tag: ${{ steps.tag_code.outputs.TAG }}
-            release_name: ${{ steps.tag_code.outputs.TAG }}
+            release_name: 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
             file_glob: true
             file: out/target/product/violet/AfterlifeOS*
